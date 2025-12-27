@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🇰🇷 K-Context Translator
 
-## Getting Started
+**Understand the *nuance* behind the Korean.**
 
-First, run the development server:
+K-Context is not just a translator; it's a cultural interpreter designed specifically for international students and travelers in Korea. Unlike standard translation apps that give you literal meanings, K-Context provides the "hidden" context—politeness levels, safety scores, and practical foreigner-friendly tips.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+![K-Context App](public/icons/icon-512x512.png)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Why K-Context?
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Standard translators (like Google Translate or Papago) are great for literal text, but they often miss the cultural context that is critical in Korea.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Feature | Standard Translators | ✅ K-Context Translator |
+|---------|---------------------|------------------------|
+| **Format** | Literal translation | **Cultural & Natural translation** |
+| **Politeness** | Often gets it wrong | **Identifies Banmal vs. Jondetmal** |
+| **Safety** | No safety warnings | **Safety Score (1-10) & Alerts** |
+| **Menu/Signs** | Just translates text | **Explains ingredients & rules** |
+| **Context** | None | **"Foreigner Context" Tips** |
 
-## Learn More
+## 🚀 Key Features
 
-To learn more about Next.js, take a look at the following resources:
+- **Text & Camera Translation**: Type or snap a photo of menus, signs, or documents.
+- **Context Clues**: Explains *why* something is said that way (e.g., "This is a popular hangover cure").
+- **Safety Score**: A 1-10 scale alerting you to potential scams, offensive language, or unsafe areas.
+- **Word Breakdown**: Learn the language while you translate with detailed word-by-word analysis.
+- **Progressive Web App (PWA)**: Installable on iOS and Android without an app store.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📲 How to Install (App Store Not Required!)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This app is a **Progressive Web App (PWA)**. You can install it directly from your browser.
 
-## Deploy on Vercel
+### On iPhone (iOS)
+1. Open [koreantranslator.vercel.app](https://koreantranslator.vercel.app) in **Safari**.
+2. Tap the **Share** button (box with an arrow 📤) at the bottom.
+3. Scroll down and tap **"Add to Home Screen"**.
+4. The app icon will appear on your home screen!
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### On Android
+1. Open the website in **Chrome**.
+2. Tap the **three dots** (⋮) in the top-right corner.
+3. Tap **"Install App"** or **"Add to Home screen"**.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### On Desktop
+1. Open the website in Chrome or Edge.
+2. Click the **Install icon** (⊕) in the address bar.
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **AI Model**: Google Gemini 2.5 Flash
+- **Styling**: Tailwind CSS
+- **PWA**: @ducanh2912/next-pwa
+- **Deployment**: Vercel
+
+## 🔒 Privacy
+
+K-Context processes images and text using Google's AI API securely. No personal data is stored permanently on our servers.
+
+---
+*Built with ❤️ for the international community in Korea.*
