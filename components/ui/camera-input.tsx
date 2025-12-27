@@ -22,13 +22,10 @@ export function CameraInput({ onImageSelect, isProcessing, className }: CameraIn
     const startCamera = async () => {
         try {
             const mediaStream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: "environment" }
+                video: true // Use default camera to ensure compatibility on all devices
             });
             setStream(mediaStream);
             setIsCameraOpen(true);
-            if (videoRef.current) {
-                videoRef.current.srcObject = mediaStream;
-            }
         } catch (error) {
             console.error("Error accessing camera:", error);
             alert("Could not access camera. Please check permissions or use Upload Image instead.");
@@ -76,6 +73,12 @@ export function CameraInput({ onImageSelect, isProcessing, className }: CameraIn
         setPreview(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
+
+    useEffect(() => {
+        if (isCameraOpen && stream && videoRef.current) {
+            videoRef.current.srcObject = stream;
+        }
+    }, [isCameraOpen, stream]);
 
     useEffect(() => {
         return () => {
@@ -162,7 +165,7 @@ export function CameraInput({ onImageSelect, isProcessing, className }: CameraIn
             <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/png, image/jpeg, image/webp"
                 onChange={handleFileChange}
                 className="hidden"
             />

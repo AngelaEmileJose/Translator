@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
     try {
-        const { text, sourceLang, targetLang } = await request.json();
+        const { text, sourceLang, targetLang, image, mimeType } = await request.json();
 
         const apiKey = process.env.GOOGLE_AI_API_KEY;
 
@@ -13,26 +13,50 @@ export async function POST(request: Request) {
             );
         }
 
-        const prompt = `You are "K-Context," a translator for international students in Korea.
+        let prompt = `You are "K-Context," an expert cultural translator for international students in Korea.
 
-Your goal is to explain Korean social dynamics, slang, and context.
+Your goal is not just to translate, but to "bridge the gap" by providing practical, safety, and cultural details a foreigner might miss.
 
 FOR EVERY INPUT, RETURN A JSON OBJECT WITH THESE FIELDS:
 
-1. "natural_translation": The best English equivalent for the situation.
-2. "politeness_level": (Banmal/Jondetmal/Honorific) and who you say it to.
-3. "context_clue": Explain the hidden meaning (e.g., "This sounds like you are annoyed" or "This is MZ generation slang").
-4. "word_breakdown": A list of objects with "word" and "meaning" fields for key words.
-5. "safe_score": 1-10 (1 = Offensive, 10 = Safe for professors).
+1. "natural_translation": The best English equivalent. If it's a menu/list, return a summarized translation of the key items.
+2. "politeness_level": (Banmal/Jondetmal/Honorific) or "N/A" for objects.
+3. "context_clue": Cultural context or hidden meaning (e.g., "This is a popular hangover cure").
+4. "practical_tips": CRITICAL INFO for foreigners. 
+   - IF MENU: List main ingredients, flavor profile (e.g., "Very Spicy"), and potential allergens (Peanuts, Shellfish, Pork, etc.).
+   - IF DOCUMENT/FORM: Explain what action is required (e.g., "You need to sign at the bottom").
+   - IF SIGN/RULE: Explain the restriction clearly.
+5. "word_breakdown": A list of objects with "word" and "meaning" fields.
+6. "safe_score": 1-10 (1 = Dangerous/Offensive, 10 = Safe/Recommended).
 
-STRICT RULE: If the input is slang (e.g., '자만추', '갑분싸'), explain the full phrase it was shortened from.
-
-Input text: "${text}"
+Input text: "${text || "No text provided, please analyze the image."}"
 
 Return ONLY the JSON object, no additional text.`;
 
+        if (image) {
+            prompt = `You are "K-Context," a smart assistant for foreigners in Korea.
+LOOK AT THE IMAGE PROVIDED.
+1. Identify the content type (Menu, Document, Sign, Chat).
+2. Translate all visible text relevance to the user.
+3. Think: "What would a foreigner find confusing or dangerous about this?" (e.g. unknown ingredients, complex rules).
+4. Provide those insights in the 'practical_tips' field.
+
+${prompt}`;
+        }
+
+        const parts: any[] = [{ text: prompt }];
+
+        if (image && mimeType) {
+            parts.unshift({
+                inlineData: {
+                    mimeType: mimeType,
+                    data: image
+                }
+            });
+        }
+
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: {
@@ -41,18 +65,15 @@ Return ONLY the JSON object, no additional text.`;
                 body: JSON.stringify({
                     contents: [
                         {
-                            parts: [
-                                {
-                                    text: prompt
-                                }
-                            ]
+                            parts: parts
                         }
                     ],
                     generationConfig: {
                         temperature: 0.4,
                         topK: 32,
                         topP: 1,
-                        maxOutputTokens: 2048,
+                        maxOutputTokens: 8192,
+                        responseMimeType: "application/json",
                     }
                 })
             }
@@ -69,6 +90,7 @@ Return ONLY the JSON object, no additional text.`;
                     natural_translation: `API Error: ${errorData.error?.code} - ${errorData.error?.message}`,
                     politeness_level: "N/A",
                     context_clue: "API connection failed. Check your API key and model access.",
+                    practical_tips: "Please check your internet connection or API key configuration.",
                     word_breakdown: [],
                     safe_score: 5
                 },
