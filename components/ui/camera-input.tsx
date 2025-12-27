@@ -22,7 +22,9 @@ export function CameraInput({ onImageSelect, isProcessing, className }: CameraIn
     const startCamera = async () => {
         try {
             const mediaStream = await navigator.mediaDevices.getUserMedia({
-                video: true // Use default camera to ensure compatibility on all devices
+                video: {
+                    facingMode: { ideal: "environment" } // Use back camera on mobile devices
+                }
             });
             setStream(mediaStream);
             setIsCameraOpen(true);
