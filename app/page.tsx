@@ -24,48 +24,76 @@ export default function Translator() {
     if (!content) return null;
     if (typeof content === 'string') return content;
 
-    // Handle structured menu/list response
-    return (
-      <div className="space-y-4 text-left w-full">
-        {content.title && <h3 className="text-xl font-bold text-indigo-300 mb-4 border-b border-indigo-500/30 pb-2">{content.title}</h3>}
+    // Handle structured menu/list response with sections
+    if (content.sections && Array.isArray(content.sections)) {
+      return (
+        <div className="space-y-4 text-left w-full">
+          {content.title && <h3 className="text-xl font-bold text-indigo-300 mb-4 border-b border-indigo-500/30 pb-2">{content.title}</h3>}
 
-        {/* Render sections if available */}
-        {content.sections && Array.isArray(content.sections) && content.sections.map((section: any, idx: number) => (
-          <div key={idx} className="bg-white/5 p-4 rounded-xl border border-white/5 mb-4 hover:bg-white/10 transition-colors">
-            {/* Section Title */}
-            {(section.title || section.category) && (
-              <h4 className="font-bold text-white mb-3 text-lg flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span>
-                {section.title || section.category}
-              </h4>
-            )}
+          {/* Render sections if available */}
+          {content.sections.map((section: any, idx: number) => (
+            <div key={idx} className="bg-white/5 p-4 rounded-xl border border-white/5 mb-4 hover:bg-white/10 transition-colors">
+              {/* Section Title */}
+              {(section.title || section.category) && (
+                <h4 className="font-bold text-white mb-3 text-lg flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span>
+                  {section.title || section.category}
+                </h4>
+              )}
 
-            {/* Items List */}
-            <ul className="space-y-3">
-              {section.items && Array.isArray(section.items) && section.items.map((item: any, i: number) => (
-                <li key={i} className="flex flex-col sm:flex-row sm:justify-between sm:items-start text-sm border-b border-white/5 pb-2 last:border-0 last:pb-0">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-slate-200 font-medium text-base">{item.name || item.text}</span>
-                    {/* Korean name fallback if available */}
-                    {item.korean_name && <span className="text-xs text-slate-500 font-light">{item.korean_name}</span>}
-                    {/* Description/Ingredients */}
-                    {item.description && <span className="text-xs text-indigo-200/70 italic mt-0.5">{item.description}</span>}
-                  </div>
-                  {item.price && <span className="text-emerald-400 font-bold font-mono ml-0 sm:ml-4 mt-1 sm:mt-0 shrink-0">{item.price}</span>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+              {/* Items List */}
+              <ul className="space-y-3">
+                {section.items && Array.isArray(section.items) && section.items.map((item: any, i: number) => (
+                  <li key={i} className="flex flex-col sm:flex-row sm:justify-between sm:items-start text-sm border-b border-white/5 pb-2 last:border-0 last:pb-0">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-slate-200 font-medium text-base">{item.name || item.text}</span>
+                      {/* Korean name fallback if available */}
+                      {item.korean_name && <span className="text-xs text-slate-500 font-light">{item.korean_name}</span>}
+                      {/* Description/Ingredients */}
+                      {item.description && <span className="text-xs text-indigo-200/70 italic mt-0.5">{item.description}</span>}
+                    </div>
+                    {item.price && <span className="text-emerald-400 font-bold font-mono ml-0 sm:ml-4 mt-1 sm:mt-0 shrink-0">{item.price}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
 
-        {content.notes && (
-          <div className="bg-yellow-500/10 p-3 rounded-lg border border-yellow-500/20 text-sm text-yellow-200/80 italic flex gap-2">
-            <span>📝</span>
-            <span>{content.notes}</span>
-          </div>
-        )}
-      </div>
-    );
+          {content.notes && (
+            <div className="bg-yellow-500/10 p-3 rounded-lg border border-yellow-500/20 text-sm text-yellow-200/80 italic flex gap-2">
+              <span>📝</span>
+              <span>{content.notes}</span>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Handle other objects (convert to readable format)
+    try {
+      return (
+        <div className="space-y-2 text-left">
+          {Object.entries(content).map(([key, value]) => {
+            // Skip empty values
+            if (!value) return null;
+
+            return (
+              <div key={key} className="bg-white/5 p-3 rounded-lg border border-white/10">
+                <span className="text-indigo-400 font-semibold capitalize">
+                  {key.replace(/_/g, ' ')}:{' '}
+                </span>
+                <span className="text-slate-200">
+                  {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    } catch (e) {
+      // Fallback: convert to string
+      return JSON.stringify(content, null, 2);
+    }
   };
 
   const handleTranslate = async () => {

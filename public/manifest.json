@@ -1,0 +1,25 @@
+{
+    "name": "K-Context Translator",
+    "short_name": "K-Context",
+    "description": "Korean translation app with cultural context for international students",
+    "theme_color": "#1e1b4b",
+    "background_color": "#0f172a",
+    "display": "standalone",
+    "orientation": "portrait",
+    "scope": "/",
+    "start_url": "/",
+    "icons": [
+        {
+            "src": "/icons/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
