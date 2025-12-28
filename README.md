@@ -1,4 +1,4 @@
-# 🇰🇷 K-Context Translator
+# K-Context Translator
 
 **Understand the *nuance* behind the Korean.**
 
